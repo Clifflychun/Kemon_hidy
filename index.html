@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复古单词抽卡机 - 英语学习</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 标题 -->
+        <header>
+            <h1 class="title">🎰 复古单词抽卡机</h1>
+            <p class="subtitle">按下抽卡机，开启你的英语学习之旅！</p>
+        </header>
+
+        <!-- 统计面板 -->
+        <div class="stats-panel">
+            <div class="stat-item">
+                <span class="stat-label">今日学习</span>
+                <span class="stat-value" id="todayCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">总计单词</span>
+                <span class="stat-value" id="totalCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">掌握程度</span>
+                <span class="stat-value" id="masteryRate">0%</span>
+            </div>
+        </div>
+
+        <!-- 抽卡机主体 -->
+        <div class="gacha-machine">
+            <!-- 顶部装饰 -->
+            <div class="machine-top">
+                <div class="light light-1"></div>
+                <div class="light light-2"></div>
+                <div class="light light-3"></div>
+            </div>
+
+            <!-- 显示屏 -->
+            <div class="display-screen">
+                <div class="screen-content" id="screenContent">
+                    <p class="welcome-text">👋 欢迎使用单词抽卡机！</p>
+                    <p class="hint-text">点击下方按钮开始抽卡</p>
+                </div>
+            </div>
+
+            <!-- 卡片出口 -->
+            <div class="card-slot">
+                <div class="slot-light"></div>
+                <div class="card-container" id="cardContainer"></div>
+            </div>
+
+            <!-- 机身 -->
+            <div class="machine-body">
+                <!-- 抽卡按钮 -->
+                <button class="gacha-button" id="gachaButton">
+                    <span class="button-text">抽 卡</span>
+                    <div class="button-glow"></div>
+                </button>
+
+                <!-- 装饰面板 -->
+                <div class="decoration-panel">
+                    <div class="deco-circle"></div>
+                    <div class="deco-circle"></div>
+                    <div class="deco-circle"></div>
+                </div>
+            </div>
+
+            <!-- 底座 -->
+            <div class="machine-base">
+                <div class="base-line"></div>
+            </div>
+        </div>
+
+        <!-- 单词卡片详情 -->
+        <div class="card-detail" id="cardDetail" style="display: none;">
+            <div class="card-front">
+                <div class="card-rarity" id="cardRarity">⭐</div>
+                <h2 class="card-word" id="cardWord">Hello</h2>
+                <p class="card-phonetic" id="cardPhonetic">[həˈləʊ]</p>
+                <div class="card-type" id="cardType">n.</div>
+            </div>
+            
+            <div class="card-back">
+                <div class="meaning-section">
+                    <h3>📖 释义</h3>
+                    <p class="card-meaning" id="cardMeaning">你好；喂</p>
+                </div>
+                
+                <div class="example-section">
+                    <h3>📝 例句</h3>
+                    <p class="card-example" id="cardExample">Hello, how are you?</p>
+                    <p class="card-translation" id="cardTranslation">你好，你好吗？</p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-know" id="btnKnow">✅ 认识</button>
+                    <button class="btn btn-learn" id="btnLearn">📚 学习</button>
+                    <button class="btn btn-next" id="btnNext">➡️ 下一个</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 难度选择 -->
+        <div class="difficulty-selector">
+            <label>难度选择：</label>
+            <select id="difficultySelect">
+                <option value="all">全部</option>
+                <option value="easy">简单（1-3星）</option>
+                <option value="medium" selected>中等（3-4星）</option>
+                <option value="hard">困难（4-5星）</option>
+            </select>
+        </div>
+
+        <!-- 音效控制 -->
+        <div class="sound-control">
+            <button id="soundToggle" class="sound-btn">🔊 音效开</button>
+        </div>
+    </div>
+
+    <!-- 粒子效果容器 -->
+    <div class="particles" id="particles"></div>
+
+    <script src="words-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,177 +1,247 @@
-# Kemon_hidy
+# 🎰 复古单词抽卡机 - 英语学习 App
 
-欢迎使用 Kemon_hidy 项目！
+一个具有复古抽卡机风格的英语单词学习应用，通过趣味的抽卡方式让英语学习变得更有趣！
 
-## 📋 目录
+## ✨ 功能特点
 
-- [简介](#简介)
-- [特性](#特性)
-- [快速开始](#快速开始)
-- [安装](#安装)
-- [使用方法](#使用方法)
-- [API 文档](#api-文档)
-- [示例](#示例)
-- [贡献指南](#贡献指南)
-- [许可证](#许可证)
+### 🎮 核心功能
+- **复古抽卡机界面** - 精美的复古风格设计，让学习充满乐趣
+- **随机单词抽取** - 每次点击都会抽出一个单词卡片
+- **难度分级** - 支持简单、中等、困难三种难度选择
+- **星级系统** - 单词按照难度分为 1-5 星
+- **完整单词信息** - 包含音标、词性、释义、例句和翻译
 
-## 🎯 简介
+### 📊 学习追踪
+- **学习统计** - 记录今日学习单词数
+- **掌握度追踪** - 显示已掌握单词的百分比
+- **本地存储** - 自动保存学习进度
 
-Kemon_hidy 是一个[项目描述待补充]。本项目旨在提供[功能描述待补充]。
+### 🎨 视觉效果
+- **动画效果** - 流畅的抽卡动画和卡片出现效果
+- **粒子特效** - 背景漂浮粒子和抽卡庆祝效果
+- **星级配色** - 不同星级的单词有不同的颜色标识
+- **响应式设计** - 完美支持手机和电脑
 
-## ✨ 特性
+### 🔊 音效系统
+- **抽卡音效** - 按下按钮时的音效
+- **成功音效** - 抽到单词时的提示音
+- **操作反馈** - 标记单词时的音效
+- **可开关控制** - 支持音效的开启/关闭
 
-- 🚀 **高性能**: 优化的核心算法确保快速执行
-- 📦 **易于使用**: 简洁的 API 设计，开箱即用
-- 🔧 **可扩展**: 灵活的架构支持自定义扩展
-- 📚 **完善的文档**: 详细的文档和示例代码
-- ✅ **测试覆盖**: 全面的单元测试和集成测试
+## 📁 项目结构
+
+```
+/workspace
+├── index.html           # 主页面
+├── style.css           # 样式文件
+├── app.js              # 应用逻辑
+├── words-data.js       # 单词数据库
+└── README.md           # 说明文档
+```
 
 ## 🚀 快速开始
 
+### 方式一：直接打开
+1. 下载所有文件到同一个文件夹
+2. 用浏览器打开 `index.html` 文件
+3. 开始学习！
+
+### 方式二：本地服务器
 ```bash
-# 克隆仓库
-git clone https://github.com/yourusername/kemon_hidy.git
+# 如果安装了 Python
+python -m http.server 8000
 
-# 进入项目目录
-cd kemon_hidy
+# 如果安装了 Node.js
+npx http-server
 
-# 安装依赖（根据项目类型调整）
-# npm install        # Node.js 项目
-# pip install -r requirements.txt  # Python 项目
-# go mod download    # Go 项目
-
-# 运行示例
-# npm start          # Node.js
-# python main.py     # Python
-# go run main.go     # Go
+# 然后在浏览器访问
+http://localhost:8000
 ```
 
-## 📦 安装
+## 📖 使用说明
 
-### 方式一：包管理器安装
+### 基本操作
 
-```bash
-# npm (Node.js)
-npm install kemon-hidy
+1. **选择难度**
+   - 简单：1-3星单词（基础词汇）
+   - 中等：3-4星单词（常用词汇）
+   - 困难：4-5星单词（高级词汇）
 
-# pip (Python)
-pip install kemon-hidy
+2. **抽取单词**
+   - 点击金色的"抽卡"按钮
+   - 等待动画完成
+   - 查看抽到的单词卡片
 
-# go get (Go)
-go get github.com/yourusername/kemon_hidy
-```
+3. **学习单词**
+   - 查看单词的音标、释义和例句
+   - 点击"✅ 认识"标记已掌握的单词
+   - 点击"📚 学习"继续学习
+   - 点击"➡️ 下一个"抽取新单词
 
-### 方式二：从源码构建
+4. **查看进度**
+   - 今日学习：今天学习的单词数量
+   - 总计单词：数据库中的单词总数
+   - 掌握程度：已掌握单词的百分比
 
-```bash
-git clone https://github.com/yourusername/kemon_hidy.git
-cd kemon_hidy
-# 根据项目类型执行相应的构建命令
-```
+### 星级说明
 
-## 💡 使用方法
+| 星级 | 颜色 | 难度 | 说明 |
+|------|------|------|------|
+| ⭐ | 灰色 | 非常简单 | 最基础的单词 |
+| ⭐⭐ | 绿色 | 简单 | 基础常用词汇 |
+| ⭐⭐⭐ | 蓝色 | 中等 | 日常常用词汇 |
+| ⭐⭐⭐⭐ | 紫色 | 困难 | 进阶词汇 |
+| ⭐⭐⭐⭐⭐ | 金色 | 非常困难 | 高级词汇 |
 
-### 基础用法
+## 💾 数据存储
+
+应用使用浏览器的 `localStorage` 存储以下数据：
+- 今日学习单词数
+- 总学习单词数
+- 已掌握的单词列表
+- 上次访问日期
+
+**注意**：清除浏览器数据会删除学习进度！
+
+## 🎯 单词数据库
+
+当前包含 **40+ 个精选单词**，涵盖：
+- 基础词汇（hello, book, cat等）
+- 常用词汇（important, beautiful等）
+- 进阶词汇（sophisticated, inevitable等）
+- 高级词汇（serendipity, ephemeral等）
+
+### 自定义单词
+
+编辑 `words-data.js` 文件添加新单词：
 
 ```javascript
-// JavaScript 示例
-const KemonHidy = require('kemon-hidy');
-
-const instance = new KemonHidy({
-  option1: 'value1',
-  option2: 'value2'
-});
-
-instance.doSomething();
+{
+    word: "example",           // 单词
+    phonetic: "[ɪɡˈzɑːmpl]",  // 音标
+    type: "n.",                // 词性
+    meaning: "例子；榜样",      // 释义
+    example: "For example...", // 例句
+    translation: "例如...",     // 翻译
+    rarity: 3                  // 星级 (1-5)
+}
 ```
 
-```python
-# Python 示例
-from kemon_hidy import KemonHidy
+## 🎨 自定义样式
 
-instance = KemonHidy(
-    option1='value1',
-    option2='value2'
-)
+### 修改主题色
+编辑 `style.css` 中的颜色变量：
 
-instance.do_something()
+```css
+/* 背景渐变 */
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+/* 抽卡机颜色 */
+background: linear-gradient(180deg, #ff6b6b 0%, #ee5a6f 100%);
 ```
 
-## 📖 API 文档
+### 调整按钮大小
+```css
+.gacha-button {
+    width: 120px;   /* 宽度 */
+    height: 120px;  /* 高度 */
+    font-size: 1.5em; /* 字体大小 */
+}
+```
 
-完整的 API 文档请查看：
-- [API 参考文档](./docs/API.md)
-- [函数文档](./docs/FUNCTIONS.md)
-- [组件文档](./docs/COMPONENTS.md)
+## 🌟 技术特点
 
-### 核心 API 概览
+### 前端技术
+- **纯原生开发** - 不依赖任何框架
+- **HTML5** - 语义化标签
+- **CSS3** - 动画和渐变效果
+- **JavaScript (ES6+)** - 现代 JS 语法
 
-#### 初始化
+### 特色功能
+- **Web Audio API** - 动态音效生成
+- **LocalStorage API** - 数据持久化
+- **CSS 动画** - 流畅的过渡效果
+- **响应式设计** - 自适应各种屏幕
+
+## 📱 浏览器支持
+
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+- ✅ 移动端浏览器
+
+## 🔧 开发与扩展
+
+### 添加新动画
+在 `style.css` 中添加关键帧：
+
+```css
+@keyframes yourAnimation {
+    0% { /* 开始状态 */ }
+    100% { /* 结束状态 */ }
+}
+```
+
+### 添加新音效
+在 `app.js` 的 `playSound` 函数中添加：
 
 ```javascript
-new KemonHidy(options)
+case 'yourSound':
+    oscillator.frequency.value = 500;
+    // 配置音效参数
+    break;
 ```
 
-**参数:**
-- `options` (Object): 配置选项对象
-  - `option1` (String): 选项1的描述
-  - `option2` (Number): 选项2的描述
+### 添加新功能
+1. 在 `index.html` 中添加 UI 元素
+2. 在 `style.css` 中添加样式
+3. 在 `app.js` 中实现逻辑
 
-**返回值:**
-- 返回 KemonHidy 实例
+## 📝 待实现功能
 
-#### 主要方法
-
-详见 [API 文档](./docs/API.md)
-
-## 📝 示例
-
-### 示例 1: 基本操作
-
-```javascript
-const result = instance.method1('parameter');
-console.log(result);
-```
-
-### 示例 2: 高级功能
-
-```javascript
-instance.method2({
-  param1: 'value1',
-  param2: 'value2'
-}).then(result => {
-  console.log('完成:', result);
-});
-```
-
-更多示例请查看 [examples](./examples) 目录。
+- [ ] 单词收藏功能
+- [ ] 学习历史记录
+- [ ] 单词发音（TTS）
+- [ ] 每日打卡系统
+- [ ] 成就系统
+- [ ] 分享功能
+- [ ] 导出学习报告
+- [ ] 多语言支持
 
 ## 🤝 贡献指南
 
-欢迎贡献！请查看 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解如何参与项目开发。
+欢迎提交 Issue 和 Pull Request！
 
-### 开发流程
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 开启 Pull Request
+### 贡献方式
+1. Fork 本项目
+2. 创建特性分支
+3. 提交更改
+4. 推送到分支
+5. 创建 Pull Request
 
 ## 📄 许可证
 
-本项目采用 [MIT License](./LICENSE) 许可证。
-
-## 📮 联系方式
-
-- 项目主页: https://github.com/yourusername/kemon_hidy
-- 问题反馈: https://github.com/yourusername/kemon_hidy/issues
-- 邮箱: your.email@example.com
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
 
 ## 🙏 致谢
 
-感谢所有为本项目做出贡献的开发者！
+- 单词数据来源于常用英语词汇表
+- 设计灵感来自复古抽卡机
+- 感谢所有使用和反馈的用户
+
+## 📞 联系方式
+
+- 项目主页: https://github.com/yourusername/word-gacha
+- 问题反馈: https://github.com/yourusername/word-gacha/issues
+- 邮箱: your.email@example.com
 
 ---
 
-**注意**: 这是一个正在积极开发中的项目。API 可能会有变动。
+**开始你的英语学习之旅吧！** 🚀
+
+记住：学习英语最重要的是**持之以恒**和**快乐学习**！
+
+---
+
+Made with ❤️ by [Your Name]
