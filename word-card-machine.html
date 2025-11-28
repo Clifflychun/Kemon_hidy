@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复古单词抽卡机</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .title {
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+        }
+
+        /* 抽卡机外壳 */
+        .card-machine {
+            background: linear-gradient(145deg, #ff6b6b, #ee5a6f);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.2),
+                inset 0 5px 20px rgba(255, 255, 255, 0.2);
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* 顶部装饰 */
+        .machine-top {
+            background: linear-gradient(145deg, #c92a2a, #a61e4d);
+            height: 40px;
+            border-radius: 20px 20px 0 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 显示窗口 */
+        .display-window {
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            border: 8px solid #d4a574;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                inset 0 5px 20px rgba(0, 0, 0, 0.5),
+                0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 卡片容器 */
+        .card-container {
+            perspective: 1000px;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 卡片 */
+        .card {
+            background: linear-gradient(145deg, #ffeaa7, #fdcb6e);
+            border: 4px solid #d4a574;
+            border-radius: 15px;
+            padding: 25px;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            animation: cardAppear 0.6s ease-out;
+        }
+
+        @keyframes cardAppear {
+            0% {
+                transform: translateY(-100px) rotateX(-90deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(20px) rotateX(10deg);
+            }
+            100% {
+                transform: translateY(0) rotateX(0);
+                opacity: 1;
+            }
+        }
+
+        .card.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px) rotate(-5deg); }
+            75% { transform: translateX(10px) rotate(5deg); }
+        }
+
+        .card-word {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-pronunciation {
+            font-size: 1.2em;
+            color: #636e72;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .card-translation {
+            font-size: 1.4em;
+            color: #2d3436;
+            margin-bottom: 15px;
+        }
+
+        .card-example {
+            font-size: 0.9em;
+            color: #636e72;
+            font-style: italic;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 100%;
+        }
+
+        /* 占位文字 */
+        .placeholder {
+            color: #d4a574;
+            font-size: 1.5em;
+            text-align: center;
+            opacity: 0.6;
+            font-weight: bold;
+        }
+
+        /* 抽卡按钮 */
+        .draw-button {
+            background: linear-gradient(145deg, #fdcb6e, #f39c12);
+            border: none;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #2d3436;
+            cursor: pointer;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.2),
+                inset 0 5px 20px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            margin: 20px auto;
+        }
+
+        .draw-button:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.4),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.2),
+                inset 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .draw-button:active {
+            transform: scale(0.95);
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.3),
+                inset 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .draw-button.drawing {
+            animation: pulse 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(0.9); }
+        }
+
+        /* 装饰灯光 */
+        .lights {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .light {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px #fff;
+            animation: blink 1s infinite alternate;
+        }
+
+        .light:nth-child(1) { animation-delay: 0s; background: #ff6b6b; box-shadow: 0 0 10px #ff6b6b; }
+        .light:nth-child(2) { animation-delay: 0.2s; background: #4ecdc4; box-shadow: 0 0 10px #4ecdc4; }
+        .light:nth-child(3) { animation-delay: 0.4s; background: #ffe66d; box-shadow: 0 0 10px #ffe66d; }
+        .light:nth-child(4) { animation-delay: 0.6s; background: #a8e6cf; box-shadow: 0 0 10px #a8e6cf; }
+        .light:nth-child(5) { animation-delay: 0.8s; background: #ff8b94; box-shadow: 0 0 10px #ff8b94; }
+
+        @keyframes blink {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        /* 计数器 */
+        .counter {
+            background: linear-gradient(145deg, #2d3436, #000);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 1.5em;
+            padding: 15px 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 3px solid #d4a574;
+            box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .title {
+                font-size: 1.8em;
+            }
+
+            .card-machine {
+                padding: 30px 20px;
+            }
+
+            .display-window {
+                padding: 20px;
+                min-height: 200px;
+            }
+
+            .card-word {
+                font-size: 2em;
+            }
+
+            .draw-button {
+                width: 120px;
+                height: 120px;
+                font-size: 1.2em;
+            }
+        }
+
+        /* 粒子效果 */
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 1s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🎰 复古单词抽卡机 🎰</h1>
+        
+        <div class="card-machine">
+            <div class="machine-top"></div>
+            
+            <div class="display-window" id="displayWindow">
+                <div class="card-container" id="cardContainer">
+                    <div class="placeholder">
+                        按下按钮<br>开始抽卡！
+                    </div>
+                </div>
+            </div>
+
+            <button class="draw-button" id="drawButton" onclick="drawCard()">
+                抽卡
+            </button>
+
+            <div class="lights">
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+                <div class="light"></div>
+            </div>
+
+            <div class="counter">
+                已抽取: <span id="counter">0</span> 张
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 单词库
+        const wordDatabase = [
+            {
+                word: "Serendipity",
+                pronunciation: "/ˌserənˈdɪpəti/",
+                translation: "意外发现美好事物的能力",
+                example: "Finding this old bookstore was pure serendipity."
+            },
+            {
+                word: "Ephemeral",
+                pronunciation: "/ɪˈfemərəl/",
+                translation: "短暂的，瞬息的",
+                example: "The beauty of cherry blossoms is ephemeral."
+            },
+            {
+                word: "Wanderlust",
+                pronunciation: "/ˈwɑːndərlʌst/",
+                translation: "旅行的渴望",
+                example: "Her wanderlust took her to remote places."
+            },
+            {
+                word: "Mellifluous",
+                pronunciation: "/meˈlɪfluəs/",
+                translation: "悦耳的，流畅的",
+                example: "His mellifluous voice captivated the audience."
+            },
+            {
+                word: "Eloquent",
+                pronunciation: "/ˈeləkwənt/",
+                translation: "雄辩的，有说服力的",
+                example: "She gave an eloquent speech about peace."
+            },
+            {
+                word: "Resilience",
+                pronunciation: "/rɪˈzɪliəns/",
+                translation: "恢复力，适应力",
+                example: "Her resilience helped her overcome challenges."
+            },
+            {
+                word: "Nostalgia",
+                pronunciation: "/nɒˈstældʒə/",
+                translation: "怀旧，乡愁",
+                example: "Old photos filled him with nostalgia."
+            },
+            {
+                word: "Luminous",
+                pronunciation: "/ˈluːmɪnəs/",
+                translation: "发光的，明亮的",
+                example: "The moon cast a luminous glow over the lake."
+            },
+            {
+                word: "Euphoria",
+                pronunciation: "/juːˈfɔːriə/",
+                translation: "极度愉快，欣快",
+                example: "Winning the game filled them with euphoria."
+            },
+            {
+                word: "Tranquil",
+                pronunciation: "/ˈtræŋkwɪl/",
+                translation: "宁静的，平静的",
+                example: "The garden was a tranquil escape from the city."
+            },
+            {
+                word: "Vivacious",
+                pronunciation: "/vɪˈveɪʃəs/",
+                translation: "活泼的，快活的",
+                example: "Her vivacious personality lit up the room."
+            },
+            {
+                word: "Ethereal",
+                pronunciation: "/ɪˈθɪəriəl/",
+                translation: "轻飘的，缥缈的",
+                example: "The dancer moved with ethereal grace."
+            },
+            {
+                word: "Perseverance",
+                pronunciation: "/ˌpɜːsɪˈvɪərəns/",
+                translation: "毅力，坚持不懈",
+                example: "Success requires perseverance and dedication."
+            },
+            {
+                word: "Sophisticated",
+                pronunciation: "/səˈfɪstɪkeɪtɪd/",
+                translation: "精致的，老练的",
+                example: "The restaurant had a sophisticated atmosphere."
+            },
+            {
+                word: "Benevolent",
+                pronunciation: "/bəˈnevələnt/",
+                translation: "仁慈的，善意的",
+                example: "The benevolent king cared for his people."
+            },
+            {
+                word: "Magnificent",
+                pronunciation: "/mæɡˈnɪfɪsnt/",
+                translation: "壮丽的，华丽的",
+                example: "The view from the mountain was magnificent."
+            },
+            {
+                word: "Innovative",
+                pronunciation: "/ˈɪnəveɪtɪv/",
+                translation: "创新的，革新的",
+                example: "The company is known for its innovative products."
+            },
+            {
+                word: "Harmonious",
+                pronunciation: "/hɑːˈməʊniəs/",
+                translation: "和谐的，协调的",
+                example: "They lived in harmonious coexistence."
+            },
+            {
+                word: "Whimsical",
+                pronunciation: "/ˈwɪmzɪkl/",
+                translation: "异想天开的，古怪的",
+                example: "The artist's work had a whimsical quality."
+            },
+            {
+                word: "Jubilant",
+                pronunciation: "/ˈdʒuːbɪlənt/",
+                translation: "欢欣的，喜气洋洋的",
+                example: "The team was jubilant after their victory."
+            }
+        ];
+
+        let drawCount = 0;
+        let isDrawing = false;
+
+        // 创建粒子效果
+        function createParticles(x, y) {
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const angle = (Math.PI * 2 * i) / 15;
+                const distance = 100 + Math.random() * 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                
+                const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#ffe66d', '#a8e6cf'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // 抽卡函数
+        function drawCard() {
+            if (isDrawing) return;
+            
+            isDrawing = true;
+            const button = document.getElementById('drawButton');
+            const cardContainer = document.getElementById('cardContainer');
+            const displayWindow = document.getElementById('displayWindow');
+            
+            // 按钮动画
+            button.classList.add('drawing');
+            
+            // 创建粒子效果
+            const rect = button.getBoundingClientRect();
+            createParticles(
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2
+            );
+            
+            // 清空容器
+            cardContainer.innerHTML = '';
+            
+            // 等待动画
+            setTimeout(() => {
+                // 随机选择一个单词
+                const randomWord = wordDatabase[Math.floor(Math.random() * wordDatabase.length)];
+                
+                // 创建卡片
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div class="card-word">${randomWord.word}</div>
+                    <div class="card-pronunciation">${randomWord.pronunciation}</div>
+                    <div class="card-translation">${randomWord.translation}</div>
+                    <div class="card-example">${randomWord.example}</div>
+                `;
+                
+                cardContainer.appendChild(card);
+                
+                // 更新计数器
+                drawCount++;
+                document.getElementById('counter').textContent = drawCount;
+                
+                // 移除按钮动画
+                button.classList.remove('drawing');
+                isDrawing = false;
+            }, 500);
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !isDrawing) {
+                e.preventDefault();
+                drawCard();
+            }
+        });
+
+        // 页面加载完成提示
+        window.addEventListener('load', () => {
+            console.log('🎰 复古单词抽卡机已就绪！');
+            console.log('💡 提示：可以按空格键快速抽卡');
+        });
+    </script>
+</body>
+</html>
