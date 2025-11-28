@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>复古单词抽卡机 - 英语学习</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 标题区域 */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .title {
+            color: #fff;
+            font-size: 2.5em;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+        }
+
+        /* 统计面板 */
+        .stats-panel {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 抽卡机主体 */
+        .gacha-machine {
+            background: linear-gradient(180deg, #ff6b6b 0%, #ee5a6f 100%);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        /* 顶部装饰灯 */
+        .machine-top {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .light {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ffd700;
+            box-shadow: 0 0 20px #ffd700;
+            animation: blink 2s infinite;
+        }
+
+        .light-2 {
+            animation-delay: 0.3s;
+        }
+
+        .light-3 {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* 显示屏 */
+        .display-screen {
+            background: linear-gradient(180deg, #2d3436 0%, #1e272e 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 120px;
+            box-shadow: 
+                inset 0 4px 8px rgba(0, 0, 0, 0.5),
+                0 2px 4px rgba(255, 255, 255, 0.1);
+            border: 3px solid #34495e;
+        }
+
+        .screen-content {
+            color: #00ff88;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .welcome-text {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        .hint-text {
+            font-size: 1em;
+            color: #88ffdd;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 10px #00ff88; }
+            50% { text-shadow: 0 0 20px #00ff88, 0 0 30px #00ff88; }
+        }
+
+        /* 卡片出口 */
+        .card-slot {
+            background: #34495e;
+            height: 40px;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .slot-light {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.3), 
+                transparent);
+        }
+
+        .slot-light.active {
+            animation: slideLight 1s ease-in-out;
+        }
+
+        @keyframes slideLight {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* 机身 */
+        .machine-body {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 抽卡按钮 */
+        .gacha-button {
+            background: linear-gradient(180deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+            border: none;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #c0392b;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 
+                0 8px 0 #d4af37,
+                0 12px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s;
+            margin-bottom: 20px;
+        }
+
+        .gacha-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 10px 0 #d4af37,
+                0 14px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .gacha-button:active {
+            transform: translateY(4px);
+            box-shadow: 
+                0 4px 0 #d4af37,
+                0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .gacha-button.spinning {
+            animation: spin 0.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .button-glow {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            right: 10%;
+            height: 30%;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            filter: blur(8px);
+        }
+
+        /* 装饰面板 */
+        .decoration-panel {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .deco-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+
+        /* 底座 */
+        .machine-base {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .base-line {
+            height: 10px;
+            background: linear-gradient(90deg, 
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent);
+            border-radius: 5px;
+        }
+
+        /* 单词卡片详情 */
+        .card-detail {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: cardAppear 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes cardAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(100px) scale(0.8) rotateX(-20deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0);
+            }
+        }
+
+        .card-rarity {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .card-word {
+            text-align: center;
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .card-phonetic {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .card-type {
+            text-align: center;
+            display: inline-block;
+            background: #3498db;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .card-front {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #ecf0f1;
+            margin-bottom: 20px;
+        }
+
+        .meaning-section,
+        .example-section {
+            margin-bottom: 20px;
+        }
+
+        .meaning-section h3,
+        .example-section h3 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .card-meaning {
+            color: #2c3e50;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .card-example {
+            color: #16a085;
+            font-style: italic;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .card-translation {
+            color: #7f8c8d;
+            font-size: 0.95em;
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-know {
+            background: #2ecc71;
+            color: #fff;
+        }
+
+        .btn-know:hover {
+            background: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+        }
+
+        .btn-learn {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .btn-learn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-next {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-next:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+
+        /* 难度选择 */
+        .difficulty-selector {
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .difficulty-selector label {
+            color: #fff;
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .difficulty-selector select {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            background: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 音效控制 */
+        .sound-control {
+            text-align: center;
+            margin-top: 15px;
+            animation: fadeInUp 0.8s ease-out 0.7s both;
+        }
+
+        .sound-btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        .sound-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* 粒子效果 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: particleFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* 动画 */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2em;
+            }
+            
+            .gacha-button {
+                width: 100px;
+                height: 100px;
+                font-size: 1.2em;
+            }
+            
+            .card-word {
+                font-size: 2em;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* 星级样式 */
+        .rarity-1 { color: #95a5a6; }
+        .rarity-2 { color: #27ae60; }
+        .rarity-3 { color: #3498db; }
+        .rarity-4 { color: #9b59b6; }
+        .rarity-5 { color: #f39c12; }
+
+        @keyframes explode {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="title">🎰 复古单词抽卡机</h1>
+            <p class="subtitle">按下抽卡机，开启你的英语学习之旅！</p>
+        </header>
+
+        <div class="stats-panel">
+            <div class="stat-item">
+                <span class="stat-label">今日学习</span>
+                <span class="stat-value" id="todayCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">总计单词</span>
+                <span class="stat-value" id="totalCount">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">掌握程度</span>
+                <span class="stat-value" id="masteryRate">0%</span>
+            </div>
+        </div>
+
+        <div class="gacha-machine">
+            <div class="machine-top">
+                <div class="light light-1"></div>
+                <div class="light light-2"></div>
+                <div class="light light-3"></div>
+            </div>
+
+            <div class="display-screen">
+                <div class="screen-content" id="screenContent">
+                    <p class="welcome-text">👋 欢迎使用单词抽卡机！</p>
+                    <p class="hint-text">点击下方按钮开始抽卡</p>
+                </div>
+            </div>
+
+            <div class="card-slot">
+                <div class="slot-light" id="slotLight"></div>
+            </div>
+
+            <div class="machine-body">
+                <button class="gacha-button" id="gachaButton">
+                    <span class="button-text">抽 卡</span>
+                    <div class="button-glow"></div>
+                </button>
+
+                <div class="decoration-panel">
+                    <div class="deco-circle"></div>
+                    <div class="deco-circle"></div>
+                    <div class="deco-circle"></div>
+                </div>
+            </div>
+
+            <div class="machine-base">
+                <div class="base-line"></div>
+            </div>
+        </div>
+
+        <div class="card-detail" id="cardDetail" style="display: none;">
+            <div class="card-front">
+                <div class="card-rarity" id="cardRarity">⭐</div>
+                <h2 class="card-word" id="cardWord">Hello</h2>
+                <p class="card-phonetic" id="cardPhonetic">[həˈləʊ]</p>
+                <div class="card-type" id="cardType">n.</div>
+            </div>
+            
+            <div class="card-back">
+                <div class="meaning-section">
+                    <h3>📖 释义</h3>
+                    <p class="card-meaning" id="cardMeaning">你好；喂</p>
+                </div>
+                
+                <div class="example-section">
+                    <h3>📝 例句</h3>
+                    <p class="card-example" id="cardExample">Hello, how are you?</p>
+                    <p class="card-translation" id="cardTranslation">你好，你好吗？</p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-know" id="btnKnow">✅ 认识</button>
+                    <button class="btn btn-learn" id="btnLearn">📚 学习</button>
+                    <button class="btn btn-next" id="btnNext">➡️ 下一个</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="difficulty-selector">
+            <label>难度选择：</label>
+            <select id="difficultySelect">
+                <option value="all">全部</option>
+                <option value="easy">简单（1-3星）</option>
+                <option value="medium" selected>中等（3-4星）</option>
+                <option value="hard">困难（4-5星）</option>
+            </select>
+        </div>
+
+        <div class="sound-control">
+            <button id="soundToggle" class="sound-btn">🔊 音效开</button>
+        </div>
+    </div>
+
+    <div class="particles" id="particles"></div>
+
+    <script>
+        // 单词数据库
+        const wordsDatabase = [
+            {word: "hello", phonetic: "[həˈləʊ]", type: "int.", meaning: "你好；喂", example: "Hello, how are you?", translation: "你好，你好吗？", rarity: 1},
+            {word: "book", phonetic: "[bʊk]", type: "n.", meaning: "书；书籍", example: "I'm reading a book.", translation: "我正在读一本书。", rarity: 1},
+            {word: "cat", phonetic: "[kæt]", type: "n.", meaning: "猫", example: "I have a cute cat.", translation: "我有一只可爱的猫。", rarity: 1},
+            {word: "dog", phonetic: "[dɒɡ]", type: "n.", meaning: "狗", example: "The dog is barking.", translation: "这只狗在叫。", rarity: 1},
+            {word: "apple", phonetic: "[ˈæpl]", type: "n.", meaning: "苹果", example: "An apple a day keeps the doctor away.", translation: "一天一个苹果，医生远离我。", rarity: 1},
+            {word: "water", phonetic: "[ˈwɔːtə]", type: "n.", meaning: "水", example: "I need a glass of water.", translation: "我需要一杯水。", rarity: 2},
+            {word: "happy", phonetic: "[ˈhæpi]", type: "adj.", meaning: "快乐的；幸福的", example: "She looks very happy today.", translation: "她今天看起来很开心。", rarity: 2},
+            {word: "friend", phonetic: "[frend]", type: "n.", meaning: "朋友", example: "He is my best friend.", translation: "他是我最好的朋友。", rarity: 2},
+            {word: "school", phonetic: "[skuːl]", type: "n.", meaning: "学校", example: "I go to school every day.", translation: "我每天去上学。", rarity: 2},
+            {word: "love", phonetic: "[lʌv]", type: "v./n.", meaning: "爱；喜欢", example: "I love my family.", translation: "我爱我的家人。", rarity: 2},
+            {word: "important", phonetic: "[ɪmˈpɔːtnt]", type: "adj.", meaning: "重要的；重大的", example: "This is a very important meeting.", translation: "这是一个非常重要的会议。", rarity: 3},
+            {word: "different", phonetic: "[ˈdɪfrənt]", type: "adj.", meaning: "不同的；各式各样的", example: "We have different opinions on this matter.", translation: "在这个问题上我们有不同的看法。", rarity: 3},
+            {word: "beautiful", phonetic: "[ˈbjuːtɪfl]", type: "adj.", meaning: "美丽的；漂亮的", example: "She is a beautiful girl.", translation: "她是一个美丽的女孩。", rarity: 3},
+            {word: "understand", phonetic: "[ˌʌndəˈstænd]", type: "v.", meaning: "理解；明白", example: "Do you understand what I mean?", translation: "你明白我的意思吗？", rarity: 3},
+            {word: "necessary", phonetic: "[ˈnesəsəri]", type: "adj.", meaning: "必要的；必需的", example: "It is necessary to learn English.", translation: "学习英语是必要的。", rarity: 3},
+            {word: "knowledge", phonetic: "[ˈnɒlɪdʒ]", type: "n.", meaning: "知识；学问", example: "Knowledge is power.", translation: "知识就是力量。", rarity: 3},
+            {word: "experience", phonetic: "[ɪkˈspɪəriəns]", type: "n./v.", meaning: "经验；经历；体验", example: "She has rich working experience.", translation: "她有丰富的工作经验。", rarity: 3},
+            {word: "challenge", phonetic: "[ˈtʃælɪndʒ]", type: "n./v.", meaning: "挑战；质疑", example: "This job is a big challenge for me.", translation: "这份工作对我来说是一个巨大的挑战。", rarity: 3},
+            {word: "opportunity", phonetic: "[ˌɒpəˈtjuːnəti]", type: "n.", meaning: "机会；时机", example: "Don't miss this great opportunity.", translation: "不要错过这个好机会。", rarity: 3},
+            {word: "develop", phonetic: "[dɪˈveləp]", type: "v.", meaning: "发展；开发；培养", example: "We need to develop new skills.", translation: "我们需要培养新技能。", rarity: 3},
+            {word: "sophisticated", phonetic: "[səˈfɪstɪkeɪtɪd]", type: "adj.", meaning: "复杂的；精致的；老练的", example: "This is a sophisticated piece of machinery.", translation: "这是一台精密的机器。", rarity: 4},
+            {word: "inevitable", phonetic: "[ɪnˈevɪtəbl]", type: "adj.", meaning: "不可避免的；必然的", example: "Change is inevitable in life.", translation: "生活中变化是不可避免的。", rarity: 4},
+            {word: "ambiguous", phonetic: "[æmˈbɪɡjuəs]", type: "adj.", meaning: "模棱两可的；含糊不清的", example: "His answer was ambiguous.", translation: "他的回答模棱两可。", rarity: 4},
+            {word: "comprehensive", phonetic: "[ˌkɒmprɪˈhensɪv]", type: "adj.", meaning: "全面的；综合的", example: "We need a comprehensive solution.", translation: "我们需要一个全面的解决方案。", rarity: 4},
+            {word: "demonstrate", phonetic: "[ˈdemənstreɪt]", type: "v.", meaning: "证明；展示；演示", example: "Let me demonstrate how it works.", translation: "让我演示一下它是如何工作的。", rarity: 4},
+            {word: "enthusiasm", phonetic: "[ɪnˈθjuːziæzəm]", type: "n.", meaning: "热情；热忱", example: "She shows great enthusiasm for her work.", translation: "她对工作表现出极大的热情。", rarity: 4},
+            {word: "fundamental", phonetic: "[ˌfʌndəˈmentl]", type: "adj.", meaning: "基本的；根本的", example: "These are fundamental principles.", translation: "这些是基本原则。", rarity: 4},
+            {word: "accomplish", phonetic: "[əˈkʌmplɪʃ]", type: "v.", meaning: "完成；实现；达到", example: "We accomplished our goal.", translation: "我们完成了目标。", rarity: 4},
+            {word: "serendipity", phonetic: "[ˌserənˈdɪpəti]", type: "n.", meaning: "意外发现珍奇事物的本领；机缘巧合", example: "Meeting her was pure serendipity.", translation: "遇见她纯属机缘巧合。", rarity: 5},
+            {word: "ephemeral", phonetic: "[ɪˈfemərəl]", type: "adj.", meaning: "短暂的；瞬息的", example: "Fame can be ephemeral.", translation: "名声可能是短暂的。", rarity: 5},
+            {word: "ubiquitous", phonetic: "[juːˈbɪkwɪtəs]", type: "adj.", meaning: "无处不在的；普遍存在的", example: "Smartphones are ubiquitous nowadays.", translation: "如今智能手机无处不在。", rarity: 5},
+            {word: "paradigm", phonetic: "[ˈpærədaɪm]", type: "n.", meaning: "范例；典范；模式", example: "This represents a paradigm shift.", translation: "这代表了范式转变。", rarity: 5},
+            {word: "eloquent", phonetic: "[ˈeləkwənt]", type: "adj.", meaning: "雄辩的；有说服力的", example: "He gave an eloquent speech.", translation: "他发表了一场雄辩的演讲。", rarity: 5},
+            {word: "meticulous", phonetic: "[məˈtɪkjələs]", type: "adj.", meaning: "一丝不苟的；极仔细的", example: "She is meticulous in her work.", translation: "她工作一丝不苟。", rarity: 5},
+            {word: "resilient", phonetic: "[rɪˈzɪliənt]", type: "adj.", meaning: "有弹性的；能恢复的；适应力强的", example: "Children are often more resilient than adults.", translation: "孩子往往比成年人适应力更强。", rarity: 5},
+            {word: "quintessential", phonetic: "[ˌkwɪntɪˈsenʃl]", type: "adj.", meaning: "典型的；精髓的", example: "He is the quintessential English gentleman.", translation: "他是典型的英国绅士。", rarity: 5}
+        ];
+
+        // 应用状态
+        const appState = {
+            todayCount: 0,
+            totalCount: 0,
+            learnedWords: new Set(),
+            soundEnabled: true,
+            currentWord: null,
+            difficulty: 'medium'
+        };
+
+        // DOM 元素
+        const elements = {
+            gachaButton: document.getElementById('gachaButton'),
+            screenContent: document.getElementById('screenContent'),
+            cardDetail: document.getElementById('cardDetail'),
+            todayCount: document.getElementById('todayCount'),
+            totalCount: document.getElementById('totalCount'),
+            masteryRate: document.getElementById('masteryRate'),
+            soundToggle: document.getElementById('soundToggle'),
+            difficultySelect: document.getElementById('difficultySelect'),
+            slotLight: document.getElementById('slotLight')
+        };
+
+        // 初始化
+        function init() {
+            loadFromLocalStorage();
+            updateStats();
+            bindEvents();
+            createParticles();
+        }
+
+        // 绑定事件
+        function bindEvents() {
+            elements.gachaButton.addEventListener('click', handleGacha);
+            elements.soundToggle.addEventListener('click', toggleSound);
+            elements.difficultySelect.addEventListener('change', (e) => {
+                appState.difficulty = e.target.value;
+                showMessage('难度已切换到：' + e.target.options[e.target.selectedIndex].text);
+            });
+            
+            document.getElementById('btnKnow').addEventListener('click', () => handleWordAction('know'));
+            document.getElementById('btnLearn').addEventListener('click', () => handleWordAction('learn'));
+            document.getElementById('btnNext').addEventListener('click', handleGacha);
+        }
+
+        // 处理抽卡
+        function handleGacha() {
+            if (elements.gachaButton.classList.contains('spinning')) {
+                return;
+            }
+            
+            playSound('gacha');
+            elements.gachaButton.classList.add('spinning');
+            showMessage('🎰 抽卡中...');
+            elements.slotLight.classList.add('active');
+            
+            setTimeout(() => {
+                const word = drawWord();
+                displayWord(word);
+                
+                appState.todayCount++;
+                appState.totalCount++;
+                updateStats();
+                saveToLocalStorage();
+                
+                elements.gachaButton.classList.remove('spinning');
+                setTimeout(() => {
+                    elements.slotLight.classList.remove('active');
+                }, 1000);
+                
+                playSound('success');
+                createCelebrationParticles(word.rarity);
+            }, 1000);
+        }
+
+        // 抽取单词
+        function drawWord() {
+            let filteredWords = wordsDatabase;
+            
+            switch(appState.difficulty) {
+                case 'easy':
+                    filteredWords = wordsDatabase.filter(w => w.rarity <= 3);
+                    break;
+                case 'medium':
+                    filteredWords = wordsDatabase.filter(w => w.rarity >= 3 && w.rarity <= 4);
+                    break;
+                case 'hard':
+                    filteredWords = wordsDatabase.filter(w => w.rarity >= 4);
+                    break;
+            }
+            
+            const randomIndex = Math.floor(Math.random() * filteredWords.length);
+            const word = filteredWords[randomIndex];
+            
+            appState.currentWord = word;
+            return word;
+        }
+
+        // 显示单词
+        function displayWord(word) {
+            const rarityStars = '⭐'.repeat(word.rarity);
+            document.getElementById('cardRarity').textContent = rarityStars;
+            document.getElementById('cardRarity').className = `card-rarity rarity-${word.rarity}`;
+            
+            document.getElementById('cardWord').textContent = word.word;
+            document.getElementById('cardPhonetic').textContent = word.phonetic;
+            document.getElementById('cardType').textContent = word.type;
+            document.getElementById('cardMeaning').textContent = word.meaning;
+            document.getElementById('cardExample').textContent = word.example;
+            document.getElementById('cardTranslation').textContent = word.translation;
+            
+            elements.cardDetail.style.display = 'block';
+            showMessage(`✨ 抽到了 ${word.rarity} 星单词！`);
+        }
+
+        // 显示消息
+        function showMessage(message) {
+            elements.screenContent.innerHTML = `<p class="welcome-text">${message}</p>`;
+        }
+
+        // 处理单词操作
+        function handleWordAction(action) {
+            if (!appState.currentWord) return;
+            
+            const word = appState.currentWord;
+            
+            switch(action) {
+                case 'know':
+                    appState.learnedWords.add(word.word);
+                    showMessage('✅ 已标记为认识！');
+                    playSound('correct');
+                    break;
+                case 'learn':
+                    showMessage('📚 继续加油学习！');
+                    playSound('learn');
+                    break;
+            }
+            
+            updateStats();
+            saveToLocalStorage();
+        }
+
+        // 更新统计
+        function updateStats() {
+            elements.todayCount.textContent = appState.todayCount;
+            elements.totalCount.textContent = wordsDatabase.length;
+            
+            const masteryRate = appState.learnedWords.size > 0 
+                ? Math.round((appState.learnedWords.size / wordsDatabase.length) * 100) 
+                : 0;
+            elements.masteryRate.textContent = masteryRate + '%';
+        }
+
+        // 切换音效
+        function toggleSound() {
+            appState.soundEnabled = !appState.soundEnabled;
+            elements.soundToggle.textContent = appState.soundEnabled ? '🔊 音效开' : '🔇 音效关';
+            showMessage(appState.soundEnabled ? '已开启音效' : '已关闭音效');
+        }
+
+        // 播放音效
+        function playSound(type) {
+            if (!appState.soundEnabled) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                switch(type) {
+                    case 'gacha':
+                        oscillator.frequency.value = 400;
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.3);
+                        break;
+                    case 'success':
+                        oscillator.frequency.value = 800;
+                        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.2);
+                        break;
+                    case 'correct':
+                        oscillator.frequency.value = 1000;
+                        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.15);
+                        break;
+                    case 'learn':
+                        oscillator.frequency.value = 600;
+                        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        oscillator.start(audioContext.currentTime);
+                        oscillator.stop(audioContext.currentTime + 0.2);
+                        break;
+                }
+            } catch(e) {
+                console.log('音效播放失败:', e);
+            }
+        }
+
+        // 创建背景粒子
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (3 + Math.random() * 2) + 's';
+                particlesContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.remove();
+                }, 6000);
+            }, 1000);
+        }
+
+        // 创建庆祝粒子
+        function createCelebrationParticles(rarity) {
+            const colors = {
+                1: '#95a5a6',
+                2: '#27ae60',
+                3: '#3498db',
+                4: '#9b59b6',
+                5: '#f39c12'
+            };
+            
+            const color = colors[rarity] || '#ffffff';
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.style.position = 'fixed';
+                    particle.style.left = '50%';
+                    particle.style.top = '50%';
+                    particle.style.width = '10px';
+                    particle.style.height = '10px';
+                    particle.style.borderRadius = '50%';
+                    particle.style.background = color;
+                    particle.style.pointerEvents = 'none';
+                    particle.style.zIndex = '1000';
+                    
+                    const angle = (Math.PI * 2 * i) / 30;
+                    const velocity = 5 + Math.random() * 5;
+                    const tx = Math.cos(angle) * velocity * 20;
+                    const ty = Math.sin(angle) * velocity * 20;
+                    
+                    particle.style.animation = `explode 1s ease-out forwards`;
+                    particle.style.setProperty('--tx', tx + 'px');
+                    particle.style.setProperty('--ty', ty + 'px');
+                    
+                    particlesContainer.appendChild(particle);
+                    
+                    setTimeout(() => particle.remove(), 1000);
+                }, i * 10);
+            }
+        }
+
+        // 本地存储
+        function saveToLocalStorage() {
+            const data = {
+                todayCount: appState.todayCount,
+                totalCount: appState.totalCount,
+                learnedWords: Array.from(appState.learnedWords),
+                lastVisit: new Date().toDateString()
+            };
+            localStorage.setItem('wordGachaData', JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('wordGachaData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                const today = new Date().toDateString();
+                if (data.lastVisit === today) {
+                    appState.todayCount = data.todayCount || 0;
+                } else {
+                    appState.todayCount = 0;
+                }
+                
+                appState.totalCount = data.totalCount || 0;
+                appState.learnedWords = new Set(data.learnedWords || []);
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
